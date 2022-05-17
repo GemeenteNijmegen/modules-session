@@ -51,7 +51,7 @@ export class Session {
     });
     try {
       const session = await this.dbClient.send(getItemCommand);
-      if (session.Item?.loggedin !== undefined) {
+      if (session.Item?.data !== undefined) {
         this.session = session;
         return session;
       } else {
@@ -67,23 +67,26 @@ export class Session {
      * @returns bool
      */
   isLoggedIn() {
-    if (this.session) {
-      return this.session.Item.loggedin.BOOL;
-    }
-    return false;
+    return this.getValue('loggedin', 'BOOL') ?? false;
   }
 
-  getValue(key: string, type = 'S') {
-    return this.session?.Item?.[key]?.[type];
+  /**
+   * Get a value from the session store by key
+   *
+   * @param key key for the element in sessionData requested
+   * @param type type of data (https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.NamingRulesDataTypes.html#HowItWorks.DataTypes)
+   * @returns {any} the value for the provided key or undefined if not found
+   */
+  getValue(key: string, type = 'S'): any {
+    return this.session?.Item?.data?.M[key]?.[type];
   }
 
   /**
      * Update the session with login state and / or BSN
      *
-     * @param {boolean} loggedin set the loggedin state
-     * @param {string} bsn set the current user bsn
+     * @param {any} sessionData set the session data
      */
-  async updateSession(loggedin: boolean = false, bsn: string = '') {
+  async updateSession(sessionData: any) {
     if (!this.sessionId) {
       throw new Error('no sessionid, cannot update empty session');
     }
@@ -101,13 +104,11 @@ export class Session {
       UpdateExpression: 'SET #ttl = :ttl, #loggedin = :loggedin, #bsn = :bsn',
       ExpressionAttributeNames: {
         '#ttl': 'ttl',
-        '#loggedin': 'loggedin',
-        '#bsn': 'bsn',
+        '#data': 'data',
       },
       ExpressionAttributeValues: {
         ':ttl': { N: ttl },
-        ':loggedin': { BOOL: loggedin },
-        ':bsn': { S: bsn },
+        ':data': { M: sessionData },
       },
     });
     try {
@@ -121,7 +122,7 @@ export class Session {
   /**
      * Create a new session, store in dynamodb
      */
-  async createSession(state: string) {
+  async createSession(sessionData: any): Promise<string> {
     const sessionId = crypto.randomUUID();
     const ttl = this.ttlFromMinutes(15);
 
@@ -129,37 +130,8 @@ export class Session {
       TableName: process.env.SESSION_TABLE,
       Item: {
         sessionid: { S: sessionId },
-        state: { S: state },
-        bsn: { S: '' },
+        data: { M: sessionData },
         ttl: { N: ttl },
-        loggedin: { BOOL: false },
-      },
-    });
-    await this.dbClient.send(command);
-    this.state = state;
-    this.sessionId = sessionId;
-  }
-
-  private ttlFromMinutes(minutes: number) {
-    const now = new Date();
-    const ttl = Math.floor((now.getTime() / 1000) + minutes * 60).toString(); // ttl is 15 minutes
-    return ttl;
-  }
-
-  /**
-     * Create a new session, store in dynamodb
-     */
-  async createLoggedInSession(bsn: string) {
-    const sessionId = crypto.randomUUID();
-    const ttl = this.ttlFromMinutes(15);
-
-    const command = new PutItemCommand({
-      TableName: process.env.SESSION_TABLE,
-      Item: {
-        sessionid: { S: sessionId },
-        bsn: { S: bsn },
-        ttl: { N: ttl },
-        loggedin: { BOOL: true },
       },
     });
     await this.dbClient.send(command);
@@ -167,7 +139,13 @@ export class Session {
     return sessionId;
   }
 
-  getCookie() {
+  private ttlFromMinutes(minutes: number): string {
+    const now = new Date();
+    const ttl = Math.floor((now.getTime() / 1000) + minutes * 60).toString(); // ttl is 15 minutes
+    return ttl;
+  }
+
+  getCookie(): string {
     const value = (this.sessionId != false) ? this.sessionId : '';
     const cookieString = cookie.serialize('session', value, {
       httpOnly: true,

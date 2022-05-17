@@ -12,14 +12,12 @@ beforeEach(() => {
   ddbMock.mockReset();
   const getItemOutput: Partial<GetItemCommandOutput> = {
     Item: {
-      loggedin: {
-        BOOL: true,
-      },
-      bsn: {
-        S: '12345678',
-      },
-      state: {
-        S: '12345',
+      data: {
+        M: {
+          loggedin: { BOOL: true },
+          bsn: { S: '12345678' },
+          state: { S: '12345' },
+        },
       },
     },
   };
@@ -51,12 +49,9 @@ describe('Given a valid loggedin Session', () => {
   test('Session is logged in', async () => {
     const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
     const session = new Session('session=12345;', dynamoDBClient);
-    if (await session.init()) {
-      expect(session.isLoggedIn()).toBe(true);
-    }
-
+    await session.init();
+    expect(session.isLoggedIn()).toBe(true);
   });
-
 });
 
 
@@ -66,14 +61,12 @@ describe('Given a valid not loggedin session', () => {
 
     const getItemOutput: Partial<GetItemCommandOutput> = {
       Item: {
-        loggedin: {
-          BOOL: false,
-        },
-        bsn: {
-          S: '12345678',
-        },
-        state: {
-          S: '12345',
+        data: {
+          M: {
+            loggedin: { BOOL: false },
+            bsn: { S: '12345678' },
+            state: { S: '12345' },
+          },
         },
       },
     };
@@ -145,7 +138,7 @@ test('creating a loggedin Session generates a new session id', async () => {
   const sessionId = '12345';
   const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
   const session = new Session(`session=${sessionId}`, dynamoDBClient);
-  await session.createLoggedInSession('12345');
+  await session.createSession('12345');
   expect(session.sessionId == sessionId).toBeFalsy();
   expect(session.sessionId).toBeTruthy();
 });

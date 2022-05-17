@@ -1,6 +1,10 @@
 {
   "dependencies": [
     {
+      "name": "@types/cookie",
+      "type": "build"
+    },
+    {
       "name": "@types/jest",
       "type": "build"
     },
@@ -79,10 +83,6 @@
     },
     {
       "name": "@aws-sdk/client-dynamodb",
-      "type": "runtime"
-    },
-    {
-      "name": "@types/cookie",
       "type": "runtime"
     },
     {
