@@ -101,7 +101,7 @@ export class Session {
       Key: {
         sessionid: { S: this.sessionId },
       },
-      UpdateExpression: 'SET #ttl = :ttl, #loggedin = :loggedin, #bsn = :bsn',
+      UpdateExpression: 'SET #ttl = :ttl, #data = :data',
       ExpressionAttributeNames: {
         '#ttl': 'ttl',
         '#data': 'data',

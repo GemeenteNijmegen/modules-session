@@ -95,7 +95,7 @@ describe('Given a session cookie', () => {
     const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
     const session = new Session('session=12345;', dynamoDBClient);
     if (await session.init()) {
-      await session.updateSession(false);
+      await session.updateSession({'loggedin': {'B': false}});
     }
 
     expect(ddbMock).toHaveBeenCalled();
@@ -105,7 +105,7 @@ describe('Given a session cookie', () => {
     const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
     const session = new Session('session=;', dynamoDBClient);
     if (await session.init()) {
-      await session.updateSession(false);
+      await session.updateSession({'loggedin': {'B': false}})
     }
 
     expect(ddbMock).toHaveBeenCalledTimes(0);
@@ -117,7 +117,7 @@ describe('Given a session cookie', () => {
     await session.init();
     expect(ddbMock).toHaveBeenCalledTimes(0);
     return expect(async () => {
-      await session.updateSession(false);
+      await session.updateSession({'loggedin': {'B': false}})
     }).rejects.toThrow();
 
   });
@@ -127,7 +127,7 @@ describe('Given a session cookie', () => {
     const session = new Session('', dynamoDBClient);
     await session.init();
     if (session.sessionId !== false) {
-      await session.updateSession(false);
+      await session.updateSession({'loggedin': {'B': false}})
     }
     expect(ddbMock).toHaveBeenCalledTimes(0);
   });
