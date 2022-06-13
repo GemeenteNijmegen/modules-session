@@ -4,6 +4,7 @@ import cookie from 'cookie';
 
 export class Session {
   sessionId: string | false;
+  sessionHash: string | false = false;
   session?: any;
   dbClient: DynamoDBClient;
   state?: string; // state parameter to validate OpenIDConnect response
@@ -19,6 +20,9 @@ export class Session {
   constructor(cookieString: string, dynamoDBClient: DynamoDBClient) {
     this.sessionId = this.getSessionId(cookieString);
     this.dbClient = dynamoDBClient;
+    if (this.sessionId) {
+      this.sessionHash = this.hash(this.sessionId);
+    }
   }
 
   /**
@@ -35,6 +39,12 @@ export class Session {
     return false;
   }
 
+  hash(hashString: string): string {
+    const hash = crypto.createHash('sha256');
+    hash.update(hashString);
+    return hash.digest('base64');
+  }
+
   /**
      * Get the current session state from dynamodb,
      * set instance variables on the Session object.
@@ -42,11 +52,11 @@ export class Session {
      * @returns dynamodb record | false
      */
   async init() {
-    if (!this.sessionId) { return false; }
+    if (!this.sessionHash) { return false; }
     const getItemCommand = new GetItemCommand({
       TableName: process.env.SESSION_TABLE,
       Key: {
-        sessionid: { S: this.sessionId },
+        sessionid: { S: this.sessionHash },
       },
     });
     try {
@@ -87,7 +97,7 @@ export class Session {
      * @param {any} sessionData set the session data
      */
   async updateSession(sessionData: any) {
-    if (!this.sessionId) {
+    if (!this.sessionHash) {
       throw new Error('no sessionid, cannot update empty session');
     }
     const ttl = this.ttlFromMinutes(15);
@@ -99,7 +109,7 @@ export class Session {
     const command = new UpdateItemCommand({
       TableName: process.env.SESSION_TABLE,
       Key: {
-        sessionid: { S: this.sessionId },
+        sessionid: { S: this.sessionHash },
       },
       UpdateExpression: 'SET #ttl = :ttl, #data = :data',
       ExpressionAttributeNames: {
@@ -124,12 +134,13 @@ export class Session {
      */
   async createSession(sessionData: any): Promise<string> {
     const sessionId = crypto.randomUUID();
+    this.sessionHash = this.hash(sessionId);
     const ttl = this.ttlFromMinutes(15);
 
     const command = new PutItemCommand({
       TableName: process.env.SESSION_TABLE,
       Item: {
-        sessionid: { S: sessionId },
+        sessionid: { S: this.sessionHash },
         data: { M: sessionData },
         ttl: { N: ttl },
       },
@@ -154,4 +165,5 @@ export class Session {
     return cookieString;
   }
 }
+
 exports.Session = Session;
