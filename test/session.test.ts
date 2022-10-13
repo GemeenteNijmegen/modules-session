@@ -136,34 +136,34 @@ describe('Setting options', () => {
     const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
     const session = new Session('', dynamoDBClient);
     expect(session.ttl).toBe(15);
-  })
-  
+  });
+
   test('Providing a ttl in constructor updates ttl', async () => {
     const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
     const session = new Session('', dynamoDBClient, { ttlInMinutes: 30 });
     expect(session.ttl).toBe(30);
-  })
+  });
 
   test('Providing a ttl in constructor passes ttl in request to dynamoDB', async () => {
     const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
     const session = new Session('', dynamoDBClient, { ttlInMinutes: 30 });
     await session.init();
-    
+
     const now = new Date();
     const ThirtyMinutesFromNow = Math.floor((now.getTime() / 1000) + 30 * 60);
 
-    await session.createSession({'test': { 'S': 'tst'}});
-    
+    await session.createSession({ test: { S: 'tst' } });
+
     // Grab the PutItemInput from the createSession call.
     const putItemInput = ddbMock.mock.calls[0][0].input as any;
     const ttl = putItemInput.Item.ttl.N;
 
-    // To prevent failing the test because both timestamps are calculated at different times 
+    // To prevent failing the test because both timestamps are calculated at different times
     // allow a second of difference.
     expect(Math.abs(parseInt(ttl) - ThirtyMinutesFromNow)).toBeLessThanOrEqual(1);
 
     expect(session.ttl).toBe(30);
-  })
+  });
 });
 
 

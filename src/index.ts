@@ -3,7 +3,7 @@ import { DynamoDBClient, GetItemCommand, PutItemCommand, UpdateItemCommand } fro
 import cookie from 'cookie';
 
 export interface SessionOptions {
-  ttlInMinutes: number //default 15 minutes
+  ttlInMinutes: number; //default 15 minutes
 }
 
 export class Session {
