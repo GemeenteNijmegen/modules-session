@@ -146,7 +146,7 @@ describe('Setting options', () => {
 
   test('Providing a ttl in constructor passes ttl in request to dynamoDB', async () => {
     const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
-    const session = new Session('', dynamoDBClient, { ttlInMinutes:   });
+    const session = new Session('', dynamoDBClient, { ttlInMinutes: 30 });
     await session.init();
     
     const now = new Date();
