@@ -56,9 +56,7 @@ describe('Given a valid loggedin Session', () => {
 
 
 describe('Given a valid not loggedin session', () => {
-
   test('Session is logged out', async () => {
-
     const getItemOutput: Partial<GetItemCommandOutput> = {
       Item: {
         data: {
@@ -131,6 +129,20 @@ describe('Given a session cookie', () => {
     }
     expect(ddbMock).toHaveBeenCalledTimes(0);
   });
+});
+
+describe('Setting options', () => {
+  test('default session length is 15 minutes', async () => {
+    const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
+    const session = new Session('', dynamoDBClient);
+    expect(session.ttl).toBe(15);
+  })
+  
+  test('Providing a ttl in constructor updates ttl', async () => {
+    const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
+    const session = new Session('', dynamoDBClient, { ttlInMinutes: 30 });
+    expect(session.ttl).toBe(30);
+  })
 });
 
 

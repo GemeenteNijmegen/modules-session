@@ -2,13 +2,17 @@ import crypto from 'crypto';
 import { DynamoDBClient, GetItemCommand, PutItemCommand, UpdateItemCommand } from '@aws-sdk/client-dynamodb';
 import cookie from 'cookie';
 
+export interface SessionOptions {
+  ttlInMinutes: number //default 15 minutes
+}
+
 export class Session {
   sessionId: string | false;
   sessionHash: string | false = false;
   session?: any;
   dbClient: DynamoDBClient;
   state?: string; // state parameter to validate OpenIDConnect response
-
+  ttl: number;
   /**
      * Session handler
      *
@@ -17,12 +21,13 @@ export class Session {
      * sessions as needed.
      * @param {string} cookieString the event object provided to the lambda
      */
-  constructor(cookieString: string, dynamoDBClient: DynamoDBClient) {
+  constructor(cookieString: string, dynamoDBClient: DynamoDBClient, options?: SessionOptions) {
     this.sessionId = this.getSessionId(cookieString);
     this.dbClient = dynamoDBClient;
     if (this.sessionId) {
       this.sessionHash = this.hash(this.sessionId);
     }
+    this.ttl = options?.ttlInMinutes ?? 15;
   }
 
   /**
@@ -100,7 +105,7 @@ export class Session {
     if (!this.sessionHash) {
       throw new Error('no sessionid, cannot update empty session');
     }
-    const ttl = this.ttlFromMinutes(15);
+    const ttl = this.ttlFromMinutes(this.ttl);
 
     /**
          * ttl is a reserved keyword in dynamodb, so we need to set
@@ -135,7 +140,7 @@ export class Session {
   async createSession(sessionData: any): Promise<string> {
     const sessionId = crypto.randomUUID();
     this.sessionHash = this.hash(sessionId);
-    const ttl = this.ttlFromMinutes(15);
+    const ttl = this.ttlFromMinutes(this.ttl);
 
     const command = new PutItemCommand({
       TableName: process.env.SESSION_TABLE,
