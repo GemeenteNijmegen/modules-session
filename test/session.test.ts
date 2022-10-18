@@ -7,6 +7,8 @@ beforeAll(() => {
 });
 
 const ddbMock = mockClient(DynamoDBClient);
+const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
+const sessionId = '12345';
 
 beforeEach(() => {
   ddbMock.mockReset();
@@ -26,8 +28,7 @@ beforeEach(() => {
 
 describe('Given a new request', () => {
   test('creating a new session succeeds', async () => {
-    const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
-    const session = new Session('session=12345;', dynamoDBClient);
+    const session = new Session(`session=${sessionId};`, dynamoDBClient);
     await session.init();
     await session.createSession('test');
     expect(ddbMock).toHaveBeenCalledTimes(2);
@@ -38,8 +39,7 @@ describe('Given a new request', () => {
 describe('Given a valid loggedin Session', () => {
 
   test('Session id is equal to cookie session id', async () => {
-    const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
-    const session = new Session('session=12345;', dynamoDBClient);
+    const session = new Session(`session=${sessionId};`, dynamoDBClient);
     if (await session.init()) {
       expect(session.sessionId).toBe('12345');
       expect(session.getValue('bsn')).toBe('12345678');
@@ -47,8 +47,7 @@ describe('Given a valid loggedin Session', () => {
   });
 
   test('Session is logged in', async () => {
-    const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
-    const session = new Session('session=12345;', dynamoDBClient);
+    const session = new Session(`session=${sessionId};`, dynamoDBClient);
     await session.init();
     expect(session.isLoggedIn()).toBe(true);
   });
@@ -70,8 +69,7 @@ describe('Given a valid not loggedin session', () => {
     };
     ddbMock.mockImplementation(() => getItemOutput);
 
-    const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
-    const session = new Session('session=12345;', dynamoDBClient);
+    const session = new Session(`session=${sessionId};`, dynamoDBClient);
     await session.init();
     expect(session.isLoggedIn()).toBe(false);
     expect(ddbMock).toHaveBeenCalled();
@@ -80,8 +78,7 @@ describe('Given a valid not loggedin session', () => {
 
 describe('Given a session cookie', () => {
   test('for a loggedin user calls session store', async () => {
-    const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
-    const session = new Session('session=12345;', dynamoDBClient);
+    const session = new Session(`session=${sessionId};`, dynamoDBClient);
     if (await session.init()) {
       expect(session.sessionId).toBe('12345');
     }
@@ -90,8 +87,7 @@ describe('Given a session cookie', () => {
   });
 
   test('for existing session will update session', async () => {
-    const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
-    const session = new Session('session=12345;', dynamoDBClient);
+    const session = new Session(`session=${sessionId};`, dynamoDBClient);
     if (await session.init()) {
       await session.updateSession({ loggedin: { B: false } });
     }
@@ -100,7 +96,6 @@ describe('Given a session cookie', () => {
   });
 
   test('that is empty will not update session', async () => {
-    const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
     const session = new Session('session=;', dynamoDBClient);
     if (await session.init()) {
       await session.updateSession({ loggedin: { B: false } });
@@ -110,7 +105,6 @@ describe('Given a session cookie', () => {
   });
 
   test('that is empty trying to update session will throw', async () => {
-    const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
     const session = new Session('session=;', dynamoDBClient);
     await session.init();
     expect(ddbMock).toHaveBeenCalledTimes(0);
@@ -121,7 +115,6 @@ describe('Given a session cookie', () => {
   });
 
   test('No session cookie will not update session', async () => {
-    const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
     const session = new Session('', dynamoDBClient);
     await session.init();
     if (session.sessionId !== false) {
@@ -133,19 +126,16 @@ describe('Given a session cookie', () => {
 
 describe('Setting options', () => {
   test('default session length is 15 minutes', async () => {
-    const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
     const session = new Session('', dynamoDBClient);
     expect(session.ttl).toBe(15);
   });
 
   test('Providing a ttl in constructor updates ttl', async () => {
-    const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
     const session = new Session('', dynamoDBClient, { ttlInMinutes: 30 });
     expect(session.ttl).toBe(30);
   });
 
   test('Providing a ttl in constructor passes ttl in request to dynamoDB', async () => {
-    const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
     const session = new Session('', dynamoDBClient, { ttlInMinutes: 30 });
     await session.init();
 
@@ -166,10 +156,37 @@ describe('Setting options', () => {
   });
 });
 
+describe('Updating a session', () => {
+  test('will also update the session object', async () => {
+    const session = new Session(`session=${sessionId}`, dynamoDBClient);
+    await session.init();
+    expect(session.getValue('state')).toBe('12345');
+
+    const newState = 'newState';
+    await session.updateSession({
+      state: { S: newState },
+    });
+
+    expect(session.getValue('state')).toBe(newState);
+  });
+
+  test('that was not valid throws', async () => {
+    const session = new Session(`session=${sessionId}`, dynamoDBClient);
+    // await session.init();
+    // expect(session.getValue('state')).toBe('12345');
+
+    const newState = 'newState';
+
+    return expect(async () => {
+      await session.updateSession({
+        state: { S: newState },
+      });
+    }).rejects.toThrow();
+  });
+});
+
 
 test('creating a loggedin Session generates a new session id', async () => {
-  const sessionId = '12345';
-  const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
   const session = new Session(`session=${sessionId}`, dynamoDBClient);
   await session.createSession('12345');
   expect(session.sessionId == sessionId).toBeFalsy();
