@@ -188,7 +188,6 @@ describe('Updating a session', () => {
 
 
 test('creating a loggedin Session generates a new session id', async () => {
-  const dynamoDBClient = new DynamoDBClient({ region: 'eu-west-1' });
   const session = new Session(`session=${sessionId}`, dynamoDBClient);
   await session.createSession('12345');
   expect(session.sessionId == sessionId).toBeFalsy();
