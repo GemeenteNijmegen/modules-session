@@ -132,7 +132,7 @@ export class Session {
       console.error('Error updating session in DynamoDB: ' + err);
       throw err;
     }
-    if(!this?.session?.Item?.data?.M) { throw Error('Session had no data before, was this a valid session?'); }
+    if (!this?.session?.Item?.data?.M) { throw Error('Session had no data before, was this a valid session?'); }
     this.session.Item.data.M = sessionData;
   }
 

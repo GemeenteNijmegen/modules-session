@@ -159,12 +159,12 @@ describe('Setting options', () => {
 describe('Updating a session', () => {
   test('will also update the session object', async () => {
     const session = new Session(`session=${sessionId}`, dynamoDBClient);
-    await session.init();    
+    await session.init();
     expect(session.getValue('state')).toBe('12345');
-    
+
     const newState = 'newState';
     await session.updateSession({
-      'state': { 'S': newState }
+      state: { S: newState },
     });
 
     expect(session.getValue('state')).toBe(newState);
@@ -172,19 +172,18 @@ describe('Updating a session', () => {
 
   test('that was not valid throws', async () => {
     const session = new Session(`session=${sessionId}`, dynamoDBClient);
-    // await session.init();    
+    // await session.init();
     // expect(session.getValue('state')).toBe('12345');
-    
+
     const newState = 'newState';
-   
+
     return expect(async () => {
       await session.updateSession({
-        'state': { 'S': newState }
+        state: { S: newState },
       });
     }).rejects.toThrow();
   });
 });
-
 
 
 test('creating a loggedin Session generates a new session id', async () => {
