@@ -1,6 +1,10 @@
 {
   "dependencies": [
     {
+      "name": "@gemeentenijmegen/projen-project-type",
+      "type": "build"
+    },
+    {
       "name": "@types/cookie",
       "type": "build"
     },
@@ -41,6 +45,10 @@
       "type": "build"
     },
     {
+      "name": "jest",
+      "type": "build"
+    },
+    {
       "name": "jest-aws-client-mock",
       "type": "build"
     },
@@ -50,17 +58,8 @@
       "type": "build"
     },
     {
-      "name": "jest",
-      "version": "^27",
-      "type": "build"
-    },
-    {
-      "name": "json-schema",
-      "type": "build"
-    },
-    {
       "name": "npm-check-updates",
-      "version": "^12",
+      "version": "^16",
       "type": "build"
     },
     {
@@ -74,7 +73,6 @@
     },
     {
       "name": "ts-jest",
-      "version": "^27",
       "type": "build"
     },
     {

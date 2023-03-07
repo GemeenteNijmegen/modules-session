@@ -1,21 +1,25 @@
-const { typescript } = require('projen');
-const { NpmAccess } = require('projen/lib/javascript');
-const project = new typescript.TypeScriptProject({
+const { GemeenteNijmegenTsPackage } = require('@gemeentenijmegen/projen-project-type');
+
+const packageName = '@gemeentenijmegen/session';
+
+const project = new GemeenteNijmegenTsPackage({
   defaultReleaseBranch: 'main',
   name: '@gemeentenijmegen/session',
-  license: 'EUPL-1.2',
-  release: true,
-  releaseToNpm: true,
-  npmAccess: NpmAccess.PUBLIC,
+  depsUpgradeOptions: {
+    workflowOptions: {
+      branches: ['main'], // No acceptance branch
+    },
+  },
   deps: [
     'cookie',
     '@aws-sdk/client-dynamodb',
   ],
-  // description: undefined,  /* The description is just a string that helps people understand the purpose of the package. */
   devDeps: [
     'jest-aws-client-mock',
     '@types/cookie',
-  ], /* Build dependencies for this module. */
-  packageName: '@gemeentenijmegen/session', /* The "name" in package.json. */
+    '@gemeentenijmegen/projen-project-type',
+  ],
+  packageName: packageName,
+  enableAutoMergeDependencies: false, // No acceptance branch
 });
 project.synth();
