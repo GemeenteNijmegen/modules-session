@@ -168,6 +168,7 @@ export class Session {
     const cookieString = cookie.serialize('session', value, {
       httpOnly: true,
       secure: true,
+      path: '/', //make sure the cookie is set for all paths in the domain
     });
     return cookieString;
   }
