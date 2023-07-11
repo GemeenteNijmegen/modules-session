@@ -192,3 +192,10 @@ test('creating a loggedin Session generates a new session id', async () => {
   expect(session.sessionId == sessionId).toBeFalsy();
   expect(session.sessionId).toBeTruthy();
 });
+
+describe('Session cookie', () => {
+  test('Cookies have the path set to /', async () => {
+    const session = new Session(`session=${sessionId}`, dynamoDBClient);
+    expect(session.getCookie()).toContain('Path=/');
+  });
+});
