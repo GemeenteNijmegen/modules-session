@@ -5,6 +5,7 @@ const packageName = '@gemeentenijmegen/session';
 const project = new GemeenteNijmegenTsPackage({
   defaultReleaseBranch: 'main',
   name: '@gemeentenijmegen/session',
+  repository: 'https://github.com/GemeenteNijmegen/modules-session.git',
   depsUpgradeOptions: {
     workflowOptions: {
       branches: ['main'], // No acceptance branch
