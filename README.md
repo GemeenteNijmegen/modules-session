@@ -43,3 +43,12 @@ after calling `getSession`, individual fields can be retrieved by calling `getVa
 session.getValue('user') // => 'John'
 session.getValue('loggedin', 'BOOL') // => true
 ```
+
+
+## Updating sessions
+Calling `setValue(key, value)`, where `key` is the key for the field you want (i.e. `user`) value the (string) value of the field, you can update an existing session.
+```
+session.getValue('user') // => 'John'
+session.setValue('user', 'Joe')
+session.getValue('user') // => Joe
+```

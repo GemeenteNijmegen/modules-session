@@ -5,6 +5,10 @@
       "type": "build"
     },
     {
+      "name": "@testcontainers/localstack",
+      "type": "build"
+    },
+    {
       "name": "@types/cookie",
       "type": "build"
     },
@@ -65,6 +69,10 @@
     {
       "name": "standard-version",
       "version": "^9",
+      "type": "build"
+    },
+    {
+      "name": "testcontainers",
       "type": "build"
     },
     {
