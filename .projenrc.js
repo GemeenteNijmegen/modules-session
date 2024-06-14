@@ -19,6 +19,8 @@ const project = new GemeenteNijmegenTsPackage({
     'jest-aws-client-mock',
     '@types/cookie',
     '@gemeentenijmegen/projen-project-type',
+    'testcontainers',
+    '@testcontainers/localstack',
   ],
   packageName: packageName,
   enableAutoMergeDependencies: false, // No acceptance branch

@@ -66,7 +66,7 @@ export class Session {
     });
     try {
       const session = await this.dbClient.send(getItemCommand);
-      if (session.Item?.data !== undefined) {
+      if (session?.Item?.data !== undefined) {
         this.session = session;
         return session;
       } else {
@@ -96,8 +96,23 @@ export class Session {
     return this.session?.Item?.data?.M[key]?.[type];
   }
 
+  /** Update the session with a single value
+   * The new data object will be written to the session
+   * immediately.
+   */
+  async setValue(key: string, value: string) {
+    if (!this.session?.Item?.data) {
+      await this.init();
+    }
+    const data = this.session?.Item?.data;
+    data.M[key] = {
+      S: value,
+    };
+    return this.updateSession(data.M);
+  }
+
   /**
-     * Update the session with login state and / or BSN
+     * Update the session with session data
      *
      * @param {any} sessionData set the session data
      */
