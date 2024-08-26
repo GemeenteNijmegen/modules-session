@@ -25,13 +25,13 @@
     "projen": "npx projen"
   },
   "devDependencies": {
-    "@gemeentenijmegen/projen-project-type": "^1.7.3",
-    "@testcontainers/localstack": "^10.10.4",
+    "@gemeentenijmegen/projen-project-type": "^1.7.4",
+    "@testcontainers/localstack": "^10.12.0",
     "@types/cookie": "^0.6.0",
     "@types/jest": "^27.5.2",
     "@types/node": "^18",
-    "@typescript-eslint/eslint-plugin": "^6",
-    "@typescript-eslint/parser": "^6",
+    "@typescript-eslint/eslint-plugin": "^7",
+    "@typescript-eslint/parser": "^7",
     "constructs": "^10.0.0",
     "eslint": "^8",
     "eslint-import-resolver-typescript": "^2.7.1",
@@ -39,14 +39,14 @@
     "jest": "^27",
     "jest-aws-client-mock": "^0.0.26",
     "jest-junit": "^15",
-    "projen": "^0.79.27",
+    "projen": "^0.82.8",
     "standard-version": "^9",
-    "testcontainers": "^10.10.4",
+    "testcontainers": "^10.12.0",
     "ts-jest": "^27",
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.620.0",
+    "@aws-sdk/client-dynamodb": "^3.637.0",
     "cookie": "^0.6.0"
   },
   "main": "lib/index.js",
@@ -56,9 +56,10 @@
   },
   "version": "0.0.0",
   "jest": {
+    "coverageProvider": "v8",
     "testMatch": [
       "<rootDir>/src/**/__tests__/**/*.ts?(x)",
-      "<rootDir>/(test|src)/**/*(*.)@(spec|test).ts?(x)"
+      "<rootDir>/@(test|src)/**/*(*.)@(spec|test).ts?(x)"
     ],
     "clearMocks": true,
     "collectCoverage": true,
