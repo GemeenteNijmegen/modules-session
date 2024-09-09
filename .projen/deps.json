@@ -5,10 +5,6 @@
       "type": "build"
     },
     {
-      "name": "@testcontainers/localstack",
-      "type": "build"
-    },
-    {
       "name": "@types/cookie",
       "type": "build"
     },
@@ -29,6 +25,11 @@
     {
       "name": "@typescript-eslint/parser",
       "version": "^7",
+      "type": "build"
+    },
+    {
+      "name": "commit-and-tag-version",
+      "version": "^12",
       "type": "build"
     },
     {
@@ -64,15 +65,6 @@
     },
     {
       "name": "projen",
-      "type": "build"
-    },
-    {
-      "name": "standard-version",
-      "version": "^9",
-      "type": "build"
-    },
-    {
-      "name": "testcontainers",
       "type": "build"
     },
     {
