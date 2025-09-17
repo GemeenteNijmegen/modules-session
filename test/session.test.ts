@@ -231,4 +231,20 @@ describe('Setting data in the session', () => {
 
     expect(ddbMock).toHaveBeenCalledTimes(2);
   });
+
+  test('Leaves data unaffected when not changed', async () => {
+    const session = new Session(`session=${sessionId};`, dynamoDBClient);
+    await session.init()
+    expect(session.sessionId).toBe('12345');
+    expect(session.getValue('bsn')).toBe('12345678');
+
+    session.setValues({
+      'abc': 'def',
+      'ghi': 'jkl',
+    });
+    expect(session.getValue('bsn')).toBe('12345678');
+    expect(session.getValue('abc')).toBe('def');
+
+    expect(ddbMock).toHaveBeenCalledTimes(2);
+  });
 });

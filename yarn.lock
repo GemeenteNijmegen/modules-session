@@ -1255,17 +1255,17 @@
     tslib "^2.6.2"
 
 "@smithy/middleware-retry@^4.2.2":
-  version "4.2.2"
-  resolved "https://registry.yarnpkg.com/@smithy/middleware-retry/-/middleware-retry-4.2.2.tgz#5f5369bc1e34e05ce29de7fb9cbb5624e3d9d1b1"
-  integrity sha512-KZJueEOO+PWqflv2oGx9jICpHdBYXwCI19j7e2V3IMwKgFcXc9D9q/dsTf4B+uCnYxjNoS1jpyv6pGNGRsKOXA==
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/@smithy/middleware-retry/-/middleware-retry-4.2.3.tgz#18c22a31a5983946ca0a3ce1a2d7c7f936f48f4e"
+  integrity sha512-am6wR0kKGCuQfaGc0f3UKdl9AmbSe3DacScw8It5aHDFNXwgXSHNbAoFrf37qZn4Br6Ap7+LI6lWaBT3LJtv7g==
   dependencies:
     "@smithy/node-config-provider" "^4.2.2"
     "@smithy/protocol-http" "^5.2.1"
-    "@smithy/service-error-classification" "^4.1.1"
+    "@smithy/service-error-classification" "^4.1.2"
     "@smithy/smithy-client" "^4.6.2"
     "@smithy/types" "^4.5.0"
     "@smithy/util-middleware" "^4.1.1"
-    "@smithy/util-retry" "^4.1.1"
+    "@smithy/util-retry" "^4.1.2"
     "@types/uuid" "^9.0.1"
     tslib "^2.6.2"
     uuid "^9.0.1"
@@ -1341,10 +1341,10 @@
     "@smithy/types" "^4.5.0"
     tslib "^2.6.2"
 
-"@smithy/service-error-classification@^4.1.1":
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/@smithy/service-error-classification/-/service-error-classification-4.1.1.tgz#86a615298ae406c3b6c7dc63c1c1738c54cfdfc6"
-  integrity sha512-Iam75b/JNXyDE41UvrlM6n8DNOa/r1ylFyvgruTUx7h2Uk7vDNV9AAwP1vfL1fOL8ls0xArwEGVcGZVd7IO/Cw==
+"@smithy/service-error-classification@^4.1.2":
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/@smithy/service-error-classification/-/service-error-classification-4.1.2.tgz#06839c332f4620a4b80c78a0c32377732dc6697a"
+  integrity sha512-Kqd8wyfmBWHZNppZSMfrQFpc3M9Y/kjyN8n8P4DqJJtuwgK1H914R471HTw7+RL+T7+kI1f1gOnL7Vb5z9+NgQ==
   dependencies:
     "@smithy/types" "^4.5.0"
 
@@ -1493,12 +1493,12 @@
     "@smithy/types" "^4.5.0"
     tslib "^2.6.2"
 
-"@smithy/util-retry@^4.1.1":
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/@smithy/util-retry/-/util-retry-4.1.1.tgz#f4a99d9b0ffb9e4bb119ac5a24e54e54d891e22c"
-  integrity sha512-jGeybqEZ/LIordPLMh5bnmnoIgsqnp4IEimmUp5c5voZ8yx+5kAlN5+juyr7p+f7AtZTgvhmInQk4Q0UVbrZ0Q==
+"@smithy/util-retry@^4.1.1", "@smithy/util-retry@^4.1.2":
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/@smithy/util-retry/-/util-retry-4.1.2.tgz#8d28c27cf69643e173c75cc18ff0186deb7cefed"
+  integrity sha512-NCgr1d0/EdeP6U5PSZ9Uv5SMR5XRRYoVr1kRVtKZxWL3tixEL3UatrPIMFZSKwHlCcp2zPLDvMubVDULRqeunA==
   dependencies:
-    "@smithy/service-error-classification" "^4.1.1"
+    "@smithy/service-error-classification" "^4.1.2"
     "@smithy/types" "^4.5.0"
     tslib "^2.6.2"
 
