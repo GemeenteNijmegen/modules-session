@@ -112,6 +112,23 @@ export class Session {
   }
 
   /**
+   * Update string values in the session in bulk
+   * The new data will be written to the session immediately.
+   */
+  async setValues(valuesToSet: Record<string, string>) {
+    if (!this.session?.Item?.data) {
+      await this.init();
+    }
+    const data = this.session?.Item?.data;
+    Object.entries(valuesToSet).forEach(([key, value]) => {
+      data.M[key] = {
+        S: value,
+      };
+    });
+    return this.updateSession(data.M);
+  }
+
+  /**
      * Update the session with session data
      *
      * @param {any} sessionData set the session data
