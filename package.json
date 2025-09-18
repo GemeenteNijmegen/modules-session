@@ -45,7 +45,7 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.890.0",
+    "@aws-sdk/client-dynamodb": "^3.891.0",
     "cookie": "^0.7.2"
   },
   "main": "lib/index.js",
