@@ -199,3 +199,51 @@ describe('Session cookie', () => {
     expect(session.getCookie()).toContain('Path=/');
   });
 });
+
+
+describe('Setting data in the session', () => {
+
+  test('Set data add data to the sessions', async () => {
+    const session = new Session(`session=${sessionId};`, dynamoDBClient);
+    await session.init();
+    expect(session.sessionId).toBe('12345');
+    expect(session.getValue('bsn')).toBe('12345678');
+
+    await session.setValue('bsn', '123');
+    expect(session.getValue('bsn')).toBe('123');
+
+    expect(ddbMock).toHaveBeenCalledTimes(2);
+  });
+
+  test('Set data add data to the sessions', async () => {
+    const session = new Session(`session=${sessionId};`, dynamoDBClient);
+    await session.init();
+    expect(session.sessionId).toBe('12345');
+    expect(session.getValue('bsn')).toBe('12345678');
+
+    await session.setValues({
+      bsn: '123',
+      abc: 'def',
+    });
+    expect(session.getValue('bsn')).toBe('123');
+    expect(session.getValue('abc')).toBe('def');
+
+    expect(ddbMock).toHaveBeenCalledTimes(2);
+  });
+
+  test('Leaves data unaffected when not changed', async () => {
+    const session = new Session(`session=${sessionId};`, dynamoDBClient);
+    await session.init();
+    expect(session.sessionId).toBe('12345');
+    expect(session.getValue('bsn')).toBe('12345678');
+
+    await session.setValues({
+      abc: 'def',
+      ghi: 'jkl',
+    });
+    expect(session.getValue('bsn')).toBe('12345678');
+    expect(session.getValue('abc')).toBe('def');
+
+    expect(ddbMock).toHaveBeenCalledTimes(2);
+  });
+});
