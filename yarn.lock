@@ -1388,7 +1388,7 @@
     "@smithy/util-stream" "^4.5.3"
     tslib "^2.6.2"
 
-"@smithy/types@^4.8.0":
+"@smithy/types@^4.6.0", "@smithy/types@^4.8.0":
   version "4.8.0"
   resolved "https://registry.yarnpkg.com/@smithy/types/-/types-4.8.0.tgz#e6f65e712478910b74747081e6046e68159f767d"
   integrity sha512-QpELEHLO8SsQVtqP+MkEgCYTFW0pleGozfs3cZ183ZBj9z3VC1CX1/wtFMK64p+5bhtZo41SeLK1rBRtd25nHQ==
