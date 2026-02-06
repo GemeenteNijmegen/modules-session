@@ -25,7 +25,7 @@
     "projen": "npx projen"
   },
   "devDependencies": {
-    "@gemeentenijmegen/projen-project-type": "^1.11.10",
+    "@gemeentenijmegen/projen-project-type": "^1.12.1",
     "@stylistic/eslint-plugin": "^2",
     "@types/cookie": "^0.6.0",
     "@types/jest": "^27.5.2",
@@ -40,13 +40,13 @@
     "jest": "^27",
     "jest-aws-client-mock": "^0.0.26",
     "jest-junit": "^16",
-    "projen": "^0.98.26",
+    "projen": "^0.99.9",
     "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.940.0",
+    "@aws-sdk/client-dynamodb": "^3.984.0",
     "cookie": "^0.7.2"
   },
   "main": "lib/index.js",
