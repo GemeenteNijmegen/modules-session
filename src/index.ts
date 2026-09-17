@@ -6,6 +6,10 @@ export interface SessionOptions {
   ttlInMinutes: number; //default 15 minutes
 }
 
+export interface SessionCookieOptions {
+  sameSite?: 'strict' | 'lax' | 'none';
+}
+
 export class Session {
   sessionId: string | false;
   sessionHash: string | false = false;
@@ -195,12 +199,15 @@ export class Session {
     return ttl;
   }
 
-  getCookie(): string {
+  getCookie(options: SessionCookieOptions = {}): string {
     const value = (this.sessionId != false) ? this.sessionId : '';
     const cookieString = cookie.serialize('session', value, {
       httpOnly: true,
       secure: true,
       path: '/', //make sure the cookie is set for all paths in the domain
+      ...(options.sameSite !== undefined && {
+        sameSite: options.sameSite,
+      }), // Backwards compatible sameSite optional property
     });
     return cookieString;
   }
