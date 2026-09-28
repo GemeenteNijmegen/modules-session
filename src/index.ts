@@ -2,6 +2,12 @@ import crypto from 'crypto';
 import { DynamoDBClient, GetItemCommand, PutItemCommand, UpdateItemCommand } from '@aws-sdk/client-dynamodb';
 import cookie from 'cookie';
 
+/**
+ * Keys that carry authentication state. These may only be written by the
+ * login flow (createSession / updateSession), never through setValues.
+ */
+const PROTECTED_KEYS = ['identifier', 'user_type', 'loggedin', 'xsrf_token'];
+
 export interface SessionOptions {
   ttlInMinutes: number; //default 15 minutes
 }
@@ -97,10 +103,14 @@ export class Session {
   }
 
   /** Update the session with a single value
-   * The new data object will be written to the session
-   * immediately.
+   * The new data object will be written to the session immediately.
+   * Refuses to write protected keys these can only be set
+   * in the login flow (createSession or updateSession).
    */
   async setValue(key: string, value: string) {
+    if (PROTECTED_KEYS.includes(key)) {
+      throw new Error(`setValue cannot write protected key: ${key} to the session`);
+    }
     if (!this.session?.Item?.data) {
       await this.init();
     }
@@ -114,8 +124,14 @@ export class Session {
   /**
    * Update string values in the session in bulk
    * The new data will be written to the session immediately.
+   * Refuses to write protected keys these can only be set
+   * in the login flow (createSession or updateSession).
    */
   async setValues(valuesToSet: Record<string, string>) {
+    const protectedKeys = Object.keys(valuesToSet).filter(key => PROTECTED_KEYS.includes(key));
+    if (protectedKeys.length > 0) {
+      throw new Error(`setValues cannot write protected keys: ${protectedKeys.join(', ')} to the session`);
+    }
     if (!this.session?.Item?.data) {
       await this.init();
     }

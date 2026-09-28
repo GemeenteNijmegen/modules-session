@@ -246,4 +246,22 @@ describe('Setting data in the session', () => {
 
     expect(ddbMock).toHaveBeenCalledTimes(2);
   });
+
+  test.each(['identifier', 'user_type', 'loggedin', 'xsrf_token'])('session.setValues refuses to write protected key %s', async (key) => {
+    const session = new Session(`session=${sessionId};`, dynamoDBClient);
+    await session.init();
+
+    await expect(session.setValues({ abc: 'def', [key]: 'evil' })).rejects.toThrow(key);
+    expect(session.getValue('abc')).toBeUndefined();
+    expect(ddbMock).toHaveBeenCalledTimes(1);
+  });
+
+  test.each(['identifier', 'user_type', 'loggedin', 'xsrf_token'])('session.setValue refuses to write protected key %s', async (key) => {
+    const session = new Session(`session=${sessionId};`, dynamoDBClient);
+    await session.init();
+
+    await expect(session.setValue(key, 'evil')).rejects.toThrow(`setValue cannot write protected key: ${key} to the session`);
+    expect(session.getValue(key)).toBeUndefined();
+    expect(ddbMock).toHaveBeenCalledTimes(1);
+  });
 });
