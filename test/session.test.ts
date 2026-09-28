@@ -198,6 +198,14 @@ describe('Session cookie', () => {
     const session = new Session(`session=${sessionId}`, dynamoDBClient);
     expect(session.getCookie()).toContain('Path=/');
   });
+  test('SameSite is not set by default (backwards compatible)', () => {
+    const session = new Session(`session=${sessionId}`, dynamoDBClient);
+    expect(session.getCookie()).not.toContain('SameSite=');
+  });
+  test('SameSite can be set to lax', () => {
+    const session = new Session(`session=${sessionId}`, dynamoDBClient);
+    expect(session.getCookie({ sameSite: 'lax' })).toContain('SameSite=Lax');
+  });
 });
 
 
